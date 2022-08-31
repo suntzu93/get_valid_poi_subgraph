@@ -1,5 +1,8 @@
-# Sript to get valid POI if subgraph failed
-./get_poi.sh subgraph_development block_number_failed
+# Script to get valid POI if subgraph failed
+
+1. Change your indexer address and RPC URL in script file
+
+2. ./get_poi.sh subgraph_development block_number_failed
 
 Example : 
 
