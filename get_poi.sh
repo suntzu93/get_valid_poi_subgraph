@@ -24,16 +24,19 @@ if [ -z "$SUBGRAPH_DEPLOYMENT" ] || [ -z "$BLOCK_NUMBER" ]; then
         exit 1
 fi
 
-start_block='{epoches(where: {startBlock_lt: '$BLOCK_NUMBER', endBlock_gt: '$BLOCK_NUMBER'}){startBlock}}'
-start_block_json="{\"query\":\"$start_block\"}"
+if [ "$BLOCK_NUMBER" -lt 11446768 ]; then
+        startBlock=11446768
+        echo "startBlock: $startBlock"
+else
+        start_block='{epoches(where: {startBlock_lt: '$BLOCK_NUMBER', endBlock_gt: '$BLOCK_NUMBER'}){startBlock}}'
+        start_block_json="{\"query\":\"$start_block\"}"
 
-
-startBlock=$(curl \
-        -s -L -X POST -H 'Content-Type: application/json' \
-        -d "$start_block_json" https://api.thegraph.com/subgraphs/name/graphprotocol/graph-network-mainnet | \
-        jq -r '.data.epoches[0].startBlock')
-echo "startBlock: " $startBlock
-
+        startBlock=$(curl \
+                -s -L -X POST -H 'Content-Type: application/json' \
+                -d "$start_block_json" https://api.thegraph.com/subgraphs/name/graphprotocol/graph-network-mainnet | \
+                jq -r '.data.epoches[0].startBlock')
+        echo "query startBlock: " $startBlock
+fi
 
 BLOCK_HEX=$(echo "obase=16; $startBlock" | bc | xargs printf "0x%s\n")
 
